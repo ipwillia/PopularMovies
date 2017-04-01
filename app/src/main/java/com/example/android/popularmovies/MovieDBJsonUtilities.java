@@ -36,7 +36,6 @@ public final class MovieDBJsonUtilities {
         moviePosterViewModels = new MoviePosterViewModel[movieResultsJson.length()];
 
         for(int i = 0; i < movieCount; i++) {
-            Log.d(LOG_TAG, "Getting object " + i);
             JSONObject singleMovieJson = movieResultsJson.getJSONObject(i);
 
             String movieID = singleMovieJson.getString(TMDB_MOVIE_ID);
@@ -44,7 +43,6 @@ public final class MovieDBJsonUtilities {
 
             String fullPosterPath = MovieDBUtilities.GetFullImageURL(relativePosterPath);
 
-            Log.d(LOG_TAG, "Movie ID " + movieID + ", poster path " + fullPosterPath);
             MoviePosterViewModel singleMoviePosterViewModel = new MoviePosterViewModel(movieID, fullPosterPath);
             moviePosterViewModels[i] = singleMoviePosterViewModel;
         }

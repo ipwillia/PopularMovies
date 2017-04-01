@@ -3,9 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/sp_menu_sort"
+        android:orderInCategory="1"
+        android:title=""
+        app:actionViewClass="android.widget.Spinner"
+        app:showAsAction="always"/>
+
     <item
         android:id="@+id/action_refresh"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="@string/action_movie_list_refresh"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
+
+
 </menu>

@@ -2,4 +2,13 @@
     <string name="app_name">PopularMovies</string>
     <string name="network_error">Network error, please try again</string>
     <string name="action_movie_list_refresh">Refresh</string>
+
+    <string name="sort_option_popular">Popular</string>
+    <string name="sort_option_top_rated">Top Rated</string>
+    <string name="sort_option_favorites">Favorites</string>
+    <string-array name="sort_options_array">
+        <item>@string/sort_option_popular</item>
+        <item>@string/sort_option_top_rated</item>
+        <item>@string/sort_option_favorites</item>
+    </string-array>
 </resources>
