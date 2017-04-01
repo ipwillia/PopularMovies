@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 /**
- * Created by Ian on 4/1/2017.
+ * This method taken from Udacity exercise S04.02. Link here: https://github.com/udacity/ud851-Sunshine/blob/student/S04.02-Exercise-DisplayDayForecast/app/src/main/java/com/example/android/sunshine/utilities/NetworkUtils.java
  */
 
 public class NetworkUtilities {
