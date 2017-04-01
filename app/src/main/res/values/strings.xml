@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="network_error">Network error, please try again</string>
+    <string name="action_movie_list_refresh">Refresh</string>
+</resources>
