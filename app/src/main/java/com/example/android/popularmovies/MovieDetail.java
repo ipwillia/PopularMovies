@@ -53,15 +53,17 @@ public class MovieDetail extends AppCompatActivity {
         if(mMovieViewModel != null) {
             Log.d(LOG_TAG, "Setting movie detail for movie id " + mMovieViewModel.MovieID);
 
-            Log.d(LOG_TAG, "Setting title");
+
             mTitleTextView.setText(mMovieViewModel.Title);
-            Log.d(LOG_TAG, "Setting poster");
+
             Picasso.with(this).load(mMovieViewModel.PosterURL).into(mPosterImageView);
-            Log.d(LOG_TAG, "Setting release date");
-            mReleaseDateTextView.setText(getString(R.string.label_release_date) + " " + mMovieViewModel.ReleaseDate);
-            Log.d(LOG_TAG, "Setting vote average");
-            mVoteAverageTextView.setText(getString(R.string.label_vote_average) + " " + Double.toString(mMovieViewModel.VoteAverage));
-            Log.d(LOG_TAG, "Setting overview");
+
+            String releaseDateContent = getString(R.string.label_release_date) + " " + mMovieViewModel.ReleaseDate;
+            mReleaseDateTextView.setText(releaseDateContent);
+
+            String voteAverageContent = getString(R.string.label_vote_average) + " " + Double.toString(mMovieViewModel.VoteAverage) + " " + getString(R.string.postfix_vote_average);
+            mVoteAverageTextView.setText(voteAverageContent);
+
             mOverviewTextView.setText(mMovieViewModel.Overview);
         } else {
             Log.e(LOG_TAG, "Cannot load, mMovieViewModel is null");

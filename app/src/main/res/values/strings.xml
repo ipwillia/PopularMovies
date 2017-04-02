@@ -15,4 +15,5 @@
 
     <string name="label_release_date">Release Date:</string>
     <string name="label_vote_average">Vote Average:</string>
+    <string name="postfix_vote_average">/ 10</string>
 </resources>
