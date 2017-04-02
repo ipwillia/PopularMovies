@@ -2,24 +2,23 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.example.android.popularmovies.viewModels.MovieViewModel;
 import com.squareup.picasso.Picasso;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private MoviePosterViewModel[] mMoviePosterViewModels = new MoviePosterViewModel[0];
+    private MovieViewModel[] mMovieViewModels = new MovieViewModel[0];
 
     private final MovieAdapterOnClickHandler mClickHandler;
 
     public interface MovieAdapterOnClickHandler {
-        void onClick(MoviePosterViewModel singleMoviePosterViewModel);
+        void onClick(MovieViewModel singleMovieViewModel);
     }
 
     public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
@@ -39,8 +38,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            MoviePosterViewModel singleMoviePosterViewModel = mMoviePosterViewModels[adapterPosition];
-            mClickHandler.onClick(singleMoviePosterViewModel);
+            MovieViewModel singleMovieViewModel = mMovieViewModels[adapterPosition];
+            mClickHandler.onClick(singleMovieViewModel);
         }
     }
 
@@ -56,20 +55,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         Context context = movieAdapterViewHolder.itemView.getContext();
-        MoviePosterViewModel singleMoviePosterViewModel = mMoviePosterViewModels[position];
-        Picasso.with(context).load(singleMoviePosterViewModel.MoviePosterUrl).into(movieAdapterViewHolder.moviePosterImageView);
+        MovieViewModel singleMovieViewModel = mMovieViewModels[position];
+        Picasso.with(context).load(singleMovieViewModel.PosterURL).into(movieAdapterViewHolder.moviePosterImageView);
     }
 
     public int getItemCount() {
         int itemCount = 0;
-        if (mMoviePosterViewModels != null) {
-            itemCount = mMoviePosterViewModels.length;
+        if (mMovieViewModels != null) {
+            itemCount = mMovieViewModels.length;
         }
         return itemCount;
     }
 
-    public void setMovieData(MoviePosterViewModel[] moviePosterViewModels) {
-        mMoviePosterViewModels = moviePosterViewModels;
+    public void setMovieData(MovieViewModel[] movieViewModels) {
+        mMovieViewModels = movieViewModels;
         notifyDataSetChanged();
     }
 }

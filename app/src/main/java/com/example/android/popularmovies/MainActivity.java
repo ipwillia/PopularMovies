@@ -1,14 +1,12 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -21,6 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.popularmovies.utilities.MovieDBJsonUtilities;
+import com.example.android.popularmovies.utilities.MovieDBUtilities;
+import com.example.android.popularmovies.utilities.NetworkUtilities;
+import com.example.android.popularmovies.viewModels.MovieViewModel;
 
 import java.net.URL;
 
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private Spinner mSortTypeSpinner;
 
     private String mMovieSortType;
-    private MoviePosterViewModel[] mMoviePosterViewModels = null;
+    private MovieViewModel[] mMovieViewModels = null;
 
     static final String STATE_SORT_TYPE = "sort_type";
     static final String STATE_MOVIE_POSTER_VIEWMODELS = "movie_poster_viewmodels";
@@ -71,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         if(savedInstanceState != null) {
             Log.d(LOG_TAG, "Recovering from previous state");
             mMovieSortType = savedInstanceState.getString(STATE_SORT_TYPE);
-            mMoviePosterViewModels = (MoviePosterViewModel[]) savedInstanceState.getParcelableArray(STATE_MOVIE_POSTER_VIEWMODELS);
-            mMovieAdapter.setMovieData(mMoviePosterViewModels);
+            mMovieViewModels = (MovieViewModel[]) savedInstanceState.getParcelableArray(STATE_MOVIE_POSTER_VIEWMODELS);
+            mMovieAdapter.setMovieData(mMovieViewModels);
         } else {
             Log.d(LOG_TAG, "Loading fresh movie data");
             mMovieSortType = getString(R.string.sort_option_popular);
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         Log.d(LOG_TAG, "Putting movie request type in bundle");
         savedInstanceState.putString(STATE_SORT_TYPE, mMovieSortType);
         Log.d(LOG_TAG, "Putting movie poster view models in bundle");
-        savedInstanceState.putParcelableArray(STATE_MOVIE_POSTER_VIEWMODELS, mMoviePosterViewModels);
+        savedInstanceState.putParcelableArray(STATE_MOVIE_POSTER_VIEWMODELS, mMovieViewModels);
     }
 
     private void loadMovieData() {
@@ -102,10 +105,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
     }
 
-    public void onClick(MoviePosterViewModel singleMoviePosterViewModel) {
+    public void onClick(MovieViewModel singleMovieViewModel) {
         Context context = this;
-        Toast.makeText(context, singleMoviePosterViewModel.MovieID, Toast.LENGTH_SHORT).show();
-        //TODO: Implement second activity
+        Class destinationClass = MovieDetail.class;
+        Intent intentToStartMovieDetailActivity = new Intent(context, destinationClass);
+        intentToStartMovieDetailActivity.putExtra(MovieViewModel.PARCELABLE_KEY, singleMovieViewModel);
+        startActivity(intentToStartMovieDetailActivity);
     }
 
     private void showMovieDataView() {
@@ -126,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mLoadingProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, MoviePosterViewModel[]> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, MovieViewModel[]> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
@@ -136,13 +141,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
 
         @Override
-        protected MoviePosterViewModel[] doInBackground(String... params) {
+        protected MovieViewModel[] doInBackground(String... params) {
             if (params.length == 0) {
                 Log.e(LOG_TAG, "No params specified for doInBackground");
                 return null;
             }
 
-            MoviePosterViewModel[] moviePosterViewModels = null;
+            MovieViewModel[] movieViewModels = null;
             String requestService = params[0];
 
             Log.d(LOG_TAG, "Making request " + requestService);
@@ -152,21 +157,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             try {
                 String jsonMovieResponse = NetworkUtilities.getResponseFromHttpUrl(movieRequestUrl);
-                moviePosterViewModels = MovieDBJsonUtilities.getMoviePosterViewModelsFromJson(MainActivity.this, jsonMovieResponse);
+                movieViewModels = MovieDBJsonUtilities.getMoviePosterViewModelsFromJson(MainActivity.this, jsonMovieResponse);
             } catch(Exception e) {
                 Log.e(LOG_TAG, "Network error: " + e.toString());
             }
 
-            return moviePosterViewModels;
+            return movieViewModels;
         }
 
         @Override
-        protected void onPostExecute(MoviePosterViewModel[] moviePosterViewModels) {
+        protected void onPostExecute(MovieViewModel[] movieViewModels) {
             hideLoadingIndicator();
-            if(moviePosterViewModels != null) {
+            if(movieViewModels != null) {
                 showMovieDataView();
-                mMoviePosterViewModels = moviePosterViewModels;
-                mMovieAdapter.setMovieData(mMoviePosterViewModels);
+                mMovieViewModels = movieViewModels;
+                mMovieAdapter.setMovieData(mMovieViewModels);
             } else {
                 showErrorMessageTextView();
             }

@@ -11,4 +11,8 @@
         <item>@string/sort_option_top_rated</item>
         <item>@string/sort_option_favorites</item>
     </string-array>
+
+
+    <string name="label_release_date">Release Date:</string>
+    <string name="label_vote_average">Vote Average:</string>
 </resources>
