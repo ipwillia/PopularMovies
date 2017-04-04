@@ -19,6 +19,9 @@ public class MovieViewModel implements Parcelable {
     public String Overview;
     public boolean IsFavorite;
 
+    public ReviewViewModel[] ReviewViewModels;
+    public VideoViewModel[] VideoViewModels;
+
     public MovieViewModel(String movieID, String posterURL, String title, String releaseDate, double voteAverage, String overview) {
         MovieID = movieID;
         PosterURL = posterURL;

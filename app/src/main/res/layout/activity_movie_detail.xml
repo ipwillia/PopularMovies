@@ -76,4 +76,17 @@
         android:textSize="12sp"
         android:padding="10dp"
         android:text="This is a really really long overview. This is a really really long overview. This is a really really long overview. This is a really really long overview. This is a really really long overview."/>
+
+<!--    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tv_videos_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:text="@string/label_videos" />-->
 </LinearLayout>

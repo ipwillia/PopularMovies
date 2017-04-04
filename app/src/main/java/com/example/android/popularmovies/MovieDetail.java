@@ -1,14 +1,21 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.utilities.MovieDBJsonUtilities;
+import com.example.android.popularmovies.utilities.MovieDBUtilities;
+import com.example.android.popularmovies.utilities.NetworkUtilities;
 import com.example.android.popularmovies.viewModels.MovieViewModel;
+import com.example.android.popularmovies.viewModels.VideoViewModel;
 import com.squareup.picasso.Picasso;
+
+import java.net.URL;
 
 public class MovieDetail extends AppCompatActivity {
 
@@ -70,4 +77,59 @@ public class MovieDetail extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        Log.d(LOG_TAG, "Putting movie view model in bundle");
+        savedInstanceState.putParcelable(STATE_MOVIE_DETAIL_VIEWMODEL, mMovieViewModel);
+    }
+
+    /*public class FetchTrailersTask extends AsyncTask<String, Void, VideoViewModel[]> {
+
+        private final String LOG_TAG = MovieDetail.FetchTrailersTask.class.getSimpleName();
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //showLoadingIndicator();
+        }
+
+        @Override
+        protected VideoViewModel[] doInBackground(String... params) {
+            if (params.length == 0) {
+                Log.e(LOG_TAG, "No params specified for doInBackground");
+                return null;
+            }
+
+            VideoViewModel[] videoViewModels = null;
+            String movieID = params[0];
+
+            Log.d(LOG_TAG, "Making request for trailers for ID " + movieID);
+            URL movieRequestUrl = MovieDBUtilities.GetMoviesURL(movieID);
+
+
+
+            try {
+                String jsonMovieResponse = NetworkUtilities.getResponseFromHttpUrl(movieRequestUrl);
+                videoViewModels = MovieDBJsonUtilities.getVideoViewModelsFromJson(jsonMovieResponse);
+            } catch(Exception e) {
+                Log.e(LOG_TAG, "Network error: " + e.toString());
+            }
+
+            return videoViewModels;
+        }
+
+        @Override
+        protected void onPostExecute(VideoViewModel[] videoViewModels) {
+            hideLoadingIndicator();
+            if(videoViewModels != null) {
+                showMovieDataView();
+                mMovieViewModels = movieViewModels;
+                mMovieAdapter.setMovieData(mMovieViewModels);
+            } else {
+                showErrorMessageTextView();
+            }
+        }
+    }*/
 }

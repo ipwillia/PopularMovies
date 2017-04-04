@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.utilities.MovieDBJsonUtilities;
 import com.example.android.popularmovies.utilities.MovieDBUtilities;
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             try {
                 String jsonMovieResponse = NetworkUtilities.getResponseFromHttpUrl(movieRequestUrl);
-                movieViewModels = MovieDBJsonUtilities.getMoviePosterViewModelsFromJson(MainActivity.this, jsonMovieResponse);
+                movieViewModels = MovieDBJsonUtilities.getMovieViewModelsFromJson(jsonMovieResponse);
             } catch(Exception e) {
                 Log.e(LOG_TAG, "Network error: " + e.toString());
             }

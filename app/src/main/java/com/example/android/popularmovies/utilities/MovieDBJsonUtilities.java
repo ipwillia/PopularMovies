@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.android.popularmovies.viewModels.MovieViewModel;
+import com.example.android.popularmovies.viewModels.VideoViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +27,11 @@ public final class MovieDBJsonUtilities {
     private static final String TMDB_VOTE_AVERAGE = "vote_average";
     private static final String TMDB_OVERVIEW = "overview";
 
-    public static MovieViewModel[] getMoviePosterViewModelsFromJson(Context context, String movieResponseJsonString)
+    private static final String TMDB_VIDEO_NAME = "name";
+    private static final String TMDB_VIDEO_KEY = "key";
+    private static final String TMDB_VIDEO_SITE = "site";
+
+    public static MovieViewModel[] getMovieViewModelsFromJson(String movieResponseJsonString)
             throws JSONException {
         MovieViewModel[] movieViewModels = null;
 
@@ -58,5 +63,34 @@ public final class MovieDBJsonUtilities {
         }
 
         return movieViewModels;
+    }
+
+    public static VideoViewModel[] getVideoViewModelsFromJson(String videoResponseJsonString)
+            throws JSONException {
+        VideoViewModel[] videoViewModels = null;
+
+        Log.d(LOG_TAG, "Getting video response JSON object");
+        JSONObject videoResponseJson = new JSONObject(videoResponseJsonString);
+
+        Log.d(LOG_TAG, "Getting video JSON object array");
+        JSONArray videoResultsJson = videoResponseJson.getJSONArray(TMDB_RESULTS);
+
+        int movieCount = videoResultsJson.length();
+        Log.d(LOG_TAG, "Found " + movieCount + " videos");
+
+        videoViewModels = new VideoViewModel[videoResultsJson.length()];
+
+        for(int i = 0; i < movieCount; i++) {
+            JSONObject singleVideoJson = videoResultsJson.getJSONObject(i);
+
+            String name = singleVideoJson.getString(TMDB_VIDEO_NAME);
+            String key = singleVideoJson.getString(TMDB_VIDEO_KEY);
+            String site = singleVideoJson.getString(TMDB_VIDEO_SITE);
+
+            VideoViewModel singleVideoViewModel = new VideoViewModel(name, key, site);
+            videoViewModels[i] = singleVideoViewModel;
+        }
+
+        return videoViewModels;
     }
 }
