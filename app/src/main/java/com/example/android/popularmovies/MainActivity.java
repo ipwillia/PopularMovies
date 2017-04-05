@@ -19,14 +19,14 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.android.popularmovies.utilities.MovieDBJsonUtilities;
+import com.example.android.popularmovies.interfaces.FetchMovieTaskCaller;
+import com.example.android.popularmovies.tasks.FetchMoviesTask;
 import com.example.android.popularmovies.utilities.MovieDBUtilities;
-import com.example.android.popularmovies.utilities.NetworkUtilities;
 import com.example.android.popularmovies.viewModels.MovieViewModel;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler, AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler, AdapterView.OnItemSelectedListener, FetchMovieTaskCaller {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -96,9 +96,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         showMovieDataView();
 
         if(mMovieSortType == getString(R.string.sort_option_popular)) {
-            new FetchMoviesTask().execute(MovieDBUtilities.MOVIE_DB_POPULAR_SERVICE);
+            new FetchMoviesTask(this).execute(MovieDBUtilities.MOVIE_DB_POPULAR_SERVICE);
         } else if(mMovieSortType == getString(R.string.sort_option_top_rated)) {
-            new FetchMoviesTask().execute(MovieDBUtilities.MOVIE_DB_TOP_RATED_SERVICE);
+            new FetchMoviesTask(this).execute(MovieDBUtilities.MOVIE_DB_TOP_RATED_SERVICE);
         } else if(mMovieSortType == getString(R.string.sort_option_favorites)) {
             //Do nothing
         }
@@ -130,51 +130,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mLoadingProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, MovieViewModel[]> {
+    //Interface methods now that FetchMoviesTask is in another thread
+    public void movieDataRequestInitiated() {
+        showLoadingIndicator();
+    }
 
-        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+    public void receiveMovieData(MovieViewModel[] movieViewModels) {
+        hideLoadingIndicator();
+        showMovieDataView();
+        mMovieViewModels = movieViewModels;
+        mMovieAdapter.setMovieData(mMovieViewModels);
+    }
 
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoadingIndicator();
-        }
-
-        @Override
-        protected MovieViewModel[] doInBackground(String... params) {
-            if (params.length == 0) {
-                Log.e(LOG_TAG, "No params specified for doInBackground");
-                return null;
-            }
-
-            MovieViewModel[] movieViewModels = null;
-            String requestService = params[0];
-
-            Log.d(LOG_TAG, "Making request " + requestService);
-            URL movieRequestUrl = MovieDBUtilities.GetMoviesURL(requestService);
-
-
-
-            try {
-                String jsonMovieResponse = NetworkUtilities.getResponseFromHttpUrl(movieRequestUrl);
-                movieViewModels = MovieDBJsonUtilities.getMovieViewModelsFromJson(jsonMovieResponse);
-            } catch(Exception e) {
-                Log.e(LOG_TAG, "Network error: " + e.toString());
-            }
-
-            return movieViewModels;
-        }
-
-        @Override
-        protected void onPostExecute(MovieViewModel[] movieViewModels) {
-            hideLoadingIndicator();
-            if(movieViewModels != null) {
-                showMovieDataView();
-                mMovieViewModels = movieViewModels;
-                mMovieAdapter.setMovieData(mMovieViewModels);
-            } else {
-                showErrorMessageTextView();
-            }
-        }
+    public void errorLoadingMovieData() {
+        hideLoadingIndicator();
+        showErrorMessageTextView();
     }
 
     //Menu methods

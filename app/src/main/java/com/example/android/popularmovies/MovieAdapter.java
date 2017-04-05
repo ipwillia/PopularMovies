@@ -2,16 +2,20 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.utilities.MovieDBUtilities;
 import com.example.android.popularmovies.viewModels.MovieViewModel;
 import com.squareup.picasso.Picasso;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
+
+    private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
     private MovieViewModel[] mMovieViewModels = new MovieViewModel[0];
 
@@ -56,7 +60,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         Context context = movieAdapterViewHolder.itemView.getContext();
         MovieViewModel singleMovieViewModel = mMovieViewModels[position];
-        Picasso.with(context).load(singleMovieViewModel.PosterURL).into(movieAdapterViewHolder.moviePosterImageView);
+
+        String posterURL = singleMovieViewModel.PosterURL;
+        Log.d(LOG_TAG, posterURL);
+
+        Picasso.with(context)
+                .load(posterURL)
+                .placeholder(R.drawable.movieposter_loading)
+                .error(R.drawable.movieposter_failed)
+                .into(movieAdapterViewHolder.moviePosterImageView);
     }
 
     public int getItemCount() {

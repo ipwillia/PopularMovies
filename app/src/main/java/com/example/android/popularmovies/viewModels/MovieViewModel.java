@@ -57,7 +57,7 @@ public class MovieViewModel implements Parcelable {
         dest.writeByte((byte)(IsFavorite ? 1 : 0));
     }
 
-    static final Parcelable.Creator<MovieViewModel> CREATOR
+    public static final Parcelable.Creator<MovieViewModel> CREATOR
             = new Parcelable.Creator<MovieViewModel>() {
 
         public MovieViewModel createFromParcel(Parcel in) {
