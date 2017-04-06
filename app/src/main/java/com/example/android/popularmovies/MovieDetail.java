@@ -17,6 +17,9 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetail extends AppCompatActivity {
 
     private final String LOG_TAG = MovieDetail.class.getSimpleName();
@@ -24,11 +27,11 @@ public class MovieDetail extends AppCompatActivity {
     static final String STATE_MOVIE_DETAIL_VIEWMODEL = "movie_poster_viewmodel";
     private MovieViewModel mMovieViewModel;
 
-    private TextView mTitleTextView;
-    private ImageView mPosterImageView;
-    private TextView mReleaseDateTextView;
-    private TextView mVoteAverageTextView;
-    private TextView mOverviewTextView;
+    @BindView(R.id.tv_movie_detail_title) TextView mTitleTextView;
+    @BindView(R.id.iv_movie_detail_poster) ImageView mPosterImageView;
+    @BindView(R.id.tv_movie_detail_release_date) TextView mReleaseDateTextView;
+    @BindView(R.id.tv_movie_detail_vote_average) TextView mVoteAverageTextView;
+    @BindView(R.id.tv_movie_detail_overview) TextView mOverviewTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +39,8 @@ public class MovieDetail extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
 
         //Get view elements
-        Log.d(LOG_TAG, "Getting movie detail view elements");
-        mTitleTextView = (TextView) findViewById(R.id.tv_movie_detail_title);
-        mPosterImageView = (ImageView) findViewById(R.id.iv_movie_detail_poster);
-        mReleaseDateTextView = (TextView) findViewById(R.id.tv_movie_detail_release_date);
-        mVoteAverageTextView = (TextView) findViewById(R.id.tv_movie_detail_vote_average);
-        mOverviewTextView = (TextView) findViewById(R.id.tv_movie_detail_overview);
-
+        Log.d(LOG_TAG, "Binding view elements with butterknife");
+        ButterKnife.bind(this);
 
         //Get movie viewmodel
         if(savedInstanceState != null) {

@@ -13,6 +13,9 @@ import com.example.android.popularmovies.utilities.MovieDBUtilities;
 import com.example.android.popularmovies.viewModels.MovieViewModel;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
@@ -32,11 +35,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder
         implements OnClickListener {
 
-        ImageView moviePosterImageView;
+        @BindView(R.id.iv_movie_data) ImageView moviePosterImageView;
 
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
-            moviePosterImageView = (ImageView) itemView.findViewById(R.id.iv_movie_data);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
