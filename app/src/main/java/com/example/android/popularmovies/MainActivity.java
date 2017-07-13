@@ -2,7 +2,6 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,12 +18,11 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.adapters.MovieAdapter;
 import com.example.android.popularmovies.interfaces.FetchMovieTaskCaller;
 import com.example.android.popularmovies.tasks.FetchMoviesTask;
 import com.example.android.popularmovies.utilities.MovieDBUtilities;
 import com.example.android.popularmovies.viewModels.MovieViewModel;
-
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler, AdapterView.OnItemSelectedListener, FetchMovieTaskCaller {
 

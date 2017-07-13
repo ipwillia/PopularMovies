@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.android.popularmovies.viewModels.MovieViewModel;
+import com.example.android.popularmovies.viewModels.ReviewViewModel;
 import com.example.android.popularmovies.viewModels.VideoViewModel;
 
 import org.json.JSONArray;
@@ -31,18 +32,19 @@ public final class MovieDBJsonUtilities {
     private static final String TMDB_VIDEO_KEY = "key";
     private static final String TMDB_VIDEO_SITE = "site";
 
+    private static final String TMDB_REVIEW_AUTHOR = "author";
+    private static final String TMDB_REVIEW_CONTENT = "content";
+    private static final String TMDB_REVIEW_URL = "url";
+
     public static MovieViewModel[] getMovieViewModelsFromJson(String movieResponseJsonString)
             throws JSONException {
         MovieViewModel[] movieViewModels = null;
 
-        Log.d(LOG_TAG, "Getting movie response JSON object");
         JSONObject movieResponseJson = new JSONObject(movieResponseJsonString);
 
-        Log.d(LOG_TAG, "Getting movie JSON object array");
         JSONArray movieResultsJson = movieResponseJson.getJSONArray(TMDB_RESULTS);
 
         int movieCount = movieResultsJson.length();
-        Log.d(LOG_TAG, "Found " + movieCount + " movies");
 
         movieViewModels = new MovieViewModel[movieResultsJson.length()];
 
@@ -69,10 +71,8 @@ public final class MovieDBJsonUtilities {
             throws JSONException {
         VideoViewModel[] videoViewModels = null;
 
-        Log.d(LOG_TAG, "Getting video response JSON object");
         JSONObject videoResponseJson = new JSONObject(videoResponseJsonString);
 
-        Log.d(LOG_TAG, "Getting video JSON object array");
         JSONArray videoResultsJson = videoResponseJson.getJSONArray(TMDB_RESULTS);
 
         int movieCount = videoResultsJson.length();
@@ -92,5 +92,32 @@ public final class MovieDBJsonUtilities {
         }
 
         return videoViewModels;
+    }
+
+    public static ReviewViewModel[] getReviewViewModelsFromJson(String reviewResponseJsonString)
+            throws JSONException {
+        ReviewViewModel[] reviewViewModels = null;
+
+        JSONObject reviewResponseJson = new JSONObject(reviewResponseJsonString);
+
+        JSONArray reviewResultsJson = reviewResponseJson.getJSONArray(TMDB_RESULTS);
+
+        int movieCount = reviewResultsJson.length();
+        Log.d(LOG_TAG, "Found " + movieCount + " reviews");
+
+        reviewViewModels = new ReviewViewModel[reviewResultsJson.length()];
+
+        for(int i = 0; i < movieCount; i++) {
+            JSONObject singleReviewJson = reviewResultsJson.getJSONObject(i);
+
+            String author = singleReviewJson.getString(TMDB_REVIEW_AUTHOR);
+            String content = singleReviewJson.getString(TMDB_REVIEW_CONTENT);
+            String url = singleReviewJson.getString(TMDB_REVIEW_URL);
+
+            ReviewViewModel singleReviewViewModel = new ReviewViewModel(author, content, url);
+            reviewViewModels[i] = singleReviewViewModel;
+        }
+
+        return reviewViewModels;
     }
 }

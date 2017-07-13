@@ -2,12 +2,18 @@ package com.example.android.popularmovies.viewModels;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore;
+import android.util.Log;
+
+import java.util.Arrays;
 
 /**
  * Created by Ian on 4/1/2017.
  */
 
 public class MovieViewModel implements Parcelable {
+
+    private final String LOG_TAG = MovieViewModel.class.getSimpleName();
 
     public static final String PARCELABLE_KEY = "MovieViewModel";
 
@@ -39,6 +45,9 @@ public class MovieViewModel implements Parcelable {
         VoteAverage = parcel.readDouble();
         Overview = parcel.readString();
         IsFavorite = parcel.readByte() != 0;
+
+        //ReviewViewModels = parcel.createTypedArray(ReviewViewModel.CREATOR);
+        VideoViewModels = parcel.createTypedArray(VideoViewModel.CREATOR);
     }
 
     @Override
@@ -55,6 +64,8 @@ public class MovieViewModel implements Parcelable {
         dest.writeDouble(VoteAverage);
         dest.writeString(Overview);
         dest.writeByte((byte)(IsFavorite ? 1 : 0));
+        //dest.writeTypedArray(ReviewViewModels, flags);
+        dest.writeTypedArray(VideoViewModels, flags);
     }
 
     public static final Parcelable.Creator<MovieViewModel> CREATOR

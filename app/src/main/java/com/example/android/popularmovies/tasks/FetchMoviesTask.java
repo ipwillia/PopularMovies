@@ -19,13 +19,12 @@ import java.net.URL;
 
 public class FetchMoviesTask extends AsyncTask<String, Void, MovieViewModel[]> {
 
+    private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
     FetchMovieTaskCaller mFetchMovieTaskCaller;
 
     public FetchMoviesTask(FetchMovieTaskCaller fetchMovieTaskCaller) {
         mFetchMovieTaskCaller = fetchMovieTaskCaller;
     }
-
-    private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     protected void onPreExecute() {
         super.onPreExecute();

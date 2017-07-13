@@ -80,17 +80,75 @@
             android:padding="10dp"
             android:text="This is a really really long overview. This is a really really long overview. This is a really really long overview. This is a really really long overview. This is a really really long overview."/>
 
-        <!--    <View
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
 
-            <TextView
-                android:id="@+id/tv_videos_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:padding="10dp"
-                android:text="@string/label_videos" />-->
+        <TextView
+            android:id="@+id/tv_videos_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:text="@string/label_videos" />
+
+        <ListView
+            android:id="@+id/lv_videos"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </ListView>
+
+        <ProgressBar
+            android:id="@+id/pb_videos_loading_indicator"
+            android:layout_height="42dp"
+            android:layout_width="42dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/tv_videos_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/network_error"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/tv_reviews_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:text="@string/label_reviews" />
+
+        <ListView
+            android:id="@+id/lv_reviews"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </ListView>
+
+        <ProgressBar
+            android:id="@+id/pb_reviews_loading_indicator"
+            android:layout_height="42dp"
+            android:layout_width="42dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/tv_reviews_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/network_error"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
     </LinearLayout>
 </ScrollView>

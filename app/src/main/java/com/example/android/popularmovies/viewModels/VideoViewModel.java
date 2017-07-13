@@ -1,5 +1,6 @@
 package com.example.android.popularmovies.viewModels;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -47,4 +48,14 @@ public class VideoViewModel implements Parcelable {
             return new VideoViewModel[size];
         }
     };
+
+    public Uri GetUri() {
+        if(Site.equalsIgnoreCase("YouTube")) {
+            return Uri.parse("http://www.youtube.com/watch?v=" + Key);
+        }
+        else {
+            return null;
+        }
+    }
+
 }

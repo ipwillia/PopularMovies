@@ -10,15 +10,18 @@ import android.os.Parcelable;
 public class ReviewViewModel implements Parcelable {
     public String Author;
     public String Content;
+    public String URL;
 
-    public ReviewViewModel(String author, String content) {
+    public ReviewViewModel(String author, String content, String url) {
         Author = author;
         Content = content;
+        URL = url;
     }
 
     public ReviewViewModel(Parcel parcel) {
         Author = parcel.readString();
         Content = parcel.readString();
+        URL = parcel.readString();
     }
 
     @Override
@@ -30,6 +33,7 @@ public class ReviewViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(Author);
         dest.writeString(Content);
+        dest.writeString(URL);
     }
 
     static final Parcelable.Creator<ReviewViewModel> CREATOR
