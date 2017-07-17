@@ -93,11 +93,12 @@
             android:padding="10dp"
             android:text="@string/label_videos" />
 
-        <ListView
-            android:id="@+id/lv_videos"
+        <LinearLayout
+            android:id="@+id/ll_videos"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </ListView>
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/pb_videos_loading_indicator"
@@ -128,11 +129,12 @@
             android:padding="10dp"
             android:text="@string/label_reviews" />
 
-        <ListView
-            android:id="@+id/lv_reviews"
+        <LinearLayout
+            android:id="@+id/ll_reviews"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </ListView>
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/pb_reviews_loading_indicator"

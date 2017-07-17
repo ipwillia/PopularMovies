@@ -2,14 +2,12 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,18 +17,13 @@ import com.example.android.popularmovies.interfaces.FetchReviewsTaskCaller;
 import com.example.android.popularmovies.interfaces.FetchVideosTaskCaller;
 import com.example.android.popularmovies.tasks.FetchReviewsTask;
 import com.example.android.popularmovies.tasks.FetchVideosTask;
-import com.example.android.popularmovies.utilities.ListViewUtilities;
 import com.example.android.popularmovies.viewModels.MovieViewModel;
 import com.example.android.popularmovies.viewModels.ReviewViewModel;
 import com.example.android.popularmovies.viewModels.VideoViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.example.android.popularmovies.utilities.ListViewUtilities.JustifyListViewHeightBasedOnChildren;
 
 public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCaller, FetchReviewsTaskCaller {
 
@@ -45,11 +38,11 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
     @BindView(R.id.tv_movie_detail_vote_average) TextView mVoteAverageTextView;
     @BindView(R.id.tv_movie_detail_overview) TextView mOverviewTextView;
 
-    @BindView(R.id.lv_videos) ListView mVideosListView;
+    @BindView(R.id.ll_videos) LinearLayout mVideosLinearLayout;
     @BindView(R.id.pb_videos_loading_indicator) ProgressBar mVideosLoadingProgressBar;
     @BindView(R.id.tv_videos_error_message) TextView mVideosErrorMessageTextView;
 
-    @BindView(R.id.lv_reviews) ListView mReviewsListView;
+    @BindView(R.id.ll_reviews) LinearLayout mReviewsLinearLayout;
     @BindView(R.id.pb_reviews_loading_indicator) ProgressBar mReviewsLoadingProgressBar;
     @BindView(R.id.tv_reviews_error_message) TextView mReviewsErrorMessageTextView;
 
@@ -134,7 +127,7 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
 
     private void showVideosLoadingIndicator() {
         mVideosLoadingProgressBar.setVisibility(View.VISIBLE);
-        mVideosListView.setVisibility(View.GONE);
+        mVideosLinearLayout.setVisibility(View.GONE);
     }
 
     private void hideVideosLoadingIndicator() {
@@ -143,11 +136,11 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
 
     private void showVideosErrorMessageTextView() {
         mVideosErrorMessageTextView.setVisibility(View.VISIBLE);
-        mVideosListView.setVisibility(View.GONE);
+        mVideosLinearLayout.setVisibility(View.GONE);
     }
 
     private void showVideosListView() {
-        mVideosListView.setVisibility(View.VISIBLE);
+        mVideosLinearLayout.setVisibility(View.VISIBLE);
         mVideosLoadingProgressBar.setVisibility(View.GONE);
         mVideosErrorMessageTextView.setVisibility(View.GONE);
     }
@@ -156,24 +149,28 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
         showVideosLoadingIndicator();
     }
 
-    public void receiveVideosData(VideoViewModel[] videoViewModels) {
+    public void receiveVideosData(final VideoViewModel[] videoViewModels) {
         hideVideosLoadingIndicator();
         Log.d(LOG_TAG, "Got " + videoViewModels.length + " videos");
         mMovieViewModel.VideoViewModels = videoViewModels;
 
         //Populate view
-        mVideosListView.setAdapter(new VideoListAdapter(this, videoViewModels));
-        JustifyListViewHeightBasedOnChildren(mVideosListView);
-        mVideosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                VideoViewModel videoViewModel = (VideoViewModel) parent.getItemAtPosition(position);
-                Uri videoUri = videoViewModel.GetUri();
-                if(videoUri != null) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, videoUri));
+        VideoListAdapter videoListAdapter = new VideoListAdapter(this, videoViewModels);
+        for(int i = 0; i < videoListAdapter.getCount(); i++) {
+            View singleVideoItem = videoListAdapter.getView(i, null, null);
+            final VideoViewModel singleVideoViewModel = videoViewModels[i];
+            singleVideoItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri videoUri = singleVideoViewModel.GetUri();
+                    if(videoUri != null) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, videoUri));
+                    }
                 }
-            }
-        });
+            });
+            mVideosLinearLayout.addView(singleVideoItem);
+        }
+
         showVideosListView();
     }
 
@@ -188,7 +185,7 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
 
     private void showReviewsLoadingIndicator() {
         mReviewsLoadingProgressBar.setVisibility(View.VISIBLE);
-        mReviewsListView.setVisibility(View.GONE);
+        mReviewsLinearLayout.setVisibility(View.GONE);
     }
 
     private void hideReviewsLoadingIndicator() {
@@ -197,11 +194,11 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
 
     private void showReviewsErrorMessageTextView() {
         mReviewsErrorMessageTextView.setVisibility(View.VISIBLE);
-        mReviewsListView.setVisibility(View.GONE);
+        mReviewsLinearLayout.setVisibility(View.GONE);
     }
 
     private void showReviewsListView() {
-        mReviewsListView.setVisibility(View.VISIBLE);
+        mReviewsLinearLayout.setVisibility(View.VISIBLE);
         mReviewsLoadingProgressBar.setVisibility(View.GONE);
         mReviewsErrorMessageTextView.setVisibility(View.GONE);
     }
@@ -216,8 +213,12 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
         mMovieViewModel.ReviewViewModels = reviewViewModels;
 
         //Populate view
-        mReviewsListView.setAdapter(new ReviewListAdapter(this, reviewViewModels));
-        JustifyListViewHeightBasedOnChildren(mReviewsListView);
+        ReviewListAdapter reviewListAdapter = new ReviewListAdapter(this, reviewViewModels);
+        for(int i = 0; i < reviewListAdapter.getCount(); i++) {
+            View singleReviewItem = reviewListAdapter.getView(i, null, null);
+            mReviewsLinearLayout.addView(singleReviewItem);
+        }
+
         showReviewsListView();
     }
 
