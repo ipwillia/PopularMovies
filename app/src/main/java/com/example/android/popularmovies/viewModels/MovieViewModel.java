@@ -46,7 +46,7 @@ public class MovieViewModel implements Parcelable {
         Overview = parcel.readString();
         IsFavorite = parcel.readByte() != 0;
 
-        //ReviewViewModels = parcel.createTypedArray(ReviewViewModel.CREATOR);
+        ReviewViewModels = parcel.createTypedArray(ReviewViewModel.CREATOR);
         VideoViewModels = parcel.createTypedArray(VideoViewModel.CREATOR);
     }
 
@@ -64,7 +64,7 @@ public class MovieViewModel implements Parcelable {
         dest.writeDouble(VoteAverage);
         dest.writeString(Overview);
         dest.writeByte((byte)(IsFavorite ? 1 : 0));
-        //dest.writeTypedArray(ReviewViewModels, flags);
+        dest.writeTypedArray(ReviewViewModels, flags);
         dest.writeTypedArray(VideoViewModels, flags);
     }
 

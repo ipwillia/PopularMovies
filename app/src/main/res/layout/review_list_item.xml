@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
+        android:textStyle="bold"
         android:padding="10dp"
         android:text="Placeholder review author"/>
 
@@ -19,5 +20,10 @@
         android:textSize="12sp"
         android:padding="10dp"
         android:text="Placeholder review content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
 </LinearLayout>

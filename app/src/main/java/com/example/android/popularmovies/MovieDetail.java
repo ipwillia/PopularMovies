@@ -1,11 +1,13 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.adapters.ReviewListAdapter;
 import com.example.android.popularmovies.adapters.VideoListAdapter;
+import com.example.android.popularmovies.contentProviders.FavoritesDBUtilities;
+import com.example.android.popularmovies.contentProviders.FavoritesDbHelper;
 import com.example.android.popularmovies.interfaces.FetchReviewsTaskCaller;
 import com.example.android.popularmovies.interfaces.FetchVideosTaskCaller;
 import com.example.android.popularmovies.tasks.FetchReviewsTask;
@@ -31,12 +35,14 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
 
     static final String STATE_MOVIE_DETAIL_VIEWMODEL = "movie_poster_viewmodel";
     private MovieViewModel mMovieViewModel;
+    private SQLiteDatabase mFavoritesDb;
 
     @BindView(R.id.tv_movie_detail_title) TextView mTitleTextView;
     @BindView(R.id.iv_movie_detail_poster) ImageView mPosterImageView;
     @BindView(R.id.tv_movie_detail_release_date) TextView mReleaseDateTextView;
     @BindView(R.id.tv_movie_detail_vote_average) TextView mVoteAverageTextView;
     @BindView(R.id.tv_movie_detail_overview) TextView mOverviewTextView;
+    @BindView(R.id.btn_movie_detail_mark_favorite) Button mFavoriteButton;
 
     @BindView(R.id.ll_videos) LinearLayout mVideosLinearLayout;
     @BindView(R.id.pb_videos_loading_indicator) ProgressBar mVideosLoadingProgressBar;
@@ -50,6 +56,10 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        //Get database
+        FavoritesDbHelper favoritesDbHelper = new FavoritesDbHelper(this);
+        mFavoritesDb = favoritesDbHelper.getWritableDatabase();
 
         //Get view elements
         Log.d(LOG_TAG, "Binding view elements with butterknife");
@@ -71,7 +81,6 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
         if(mMovieViewModel != null) {
             Log.d(LOG_TAG, "Setting movie detail for movie id " + mMovieViewModel.MovieID);
 
-
             mTitleTextView.setText(mMovieViewModel.Title);
 
             Picasso.with(this).load(mMovieViewModel.PosterURL).into(mPosterImageView);
@@ -83,6 +92,9 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
             mVoteAverageTextView.setText(voteAverageContent);
 
             mOverviewTextView.setText(mMovieViewModel.Overview);
+
+            SetFavoriteButtonText(mMovieViewModel.IsFavorite);
+            mFavoriteButton.setOnClickListener(new FavoriteButtonClickListener());
 
             //Videos
             if(mMovieViewModel.VideoViewModels != null)
@@ -113,15 +125,34 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
+    public void SetFavoriteButtonText(boolean isFavorite) {
+        String buttonText = "";
+        if(isFavorite) {
+            buttonText = getString(R.string.button_unmark_favorite);
+        } else {
+            buttonText = getString(R.string.button_mark_favorite);
+        }
 
-        Log.d(LOG_TAG, "Putting movie view model in bundle");
-        savedInstanceState.putParcelable(STATE_MOVIE_DETAIL_VIEWMODEL, mMovieViewModel);
+        mFavoriteButton.setText(buttonText);
     }
 
+    public class FavoriteButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            //Update Database
+            if(mMovieViewModel.IsFavorite == false) {
+                FavoritesDBUtilities.addMovie(mFavoritesDb, mMovieViewModel);
+            } else {
+                FavoritesDBUtilities.removeMovie(mFavoritesDb, mMovieViewModel);
+            }
 
+            //Update ViewModel
+            mMovieViewModel.IsFavorite = !(mMovieViewModel.IsFavorite);
+
+            //Update Button Text
+            SetFavoriteButtonText(mMovieViewModel.IsFavorite);
+        }
+    }
 
     //region Videos
 
@@ -229,4 +260,12 @@ public class MovieDetail extends AppCompatActivity implements FetchVideosTaskCal
 
     //endregion
 
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        Log.d(LOG_TAG, "Putting movie view model in bundle");
+        savedInstanceState.putParcelable(STATE_MOVIE_DETAIL_VIEWMODEL, mMovieViewModel);
+    }
 }

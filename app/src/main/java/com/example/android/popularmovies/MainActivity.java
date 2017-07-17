@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.adapters.MovieAdapter;
+import com.example.android.popularmovies.contentProviders.FavoritesDBUtilities;
+import com.example.android.popularmovies.contentProviders.FavoritesDbHelper;
 import com.example.android.popularmovies.interfaces.FetchMovieTaskCaller;
 import com.example.android.popularmovies.tasks.FetchMoviesTask;
 import com.example.android.popularmovies.utilities.MovieDBUtilities;
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private String mMovieSortType;
     private MovieViewModel[] mMovieViewModels = null;
 
+    private SQLiteDatabase mFavoritesDb;
+
     static final String STATE_SORT_TYPE = "sort_type";
     static final String STATE_MOVIE_POSTER_VIEWMODELS = "movie_poster_viewmodels";
 
@@ -44,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Get database
+        FavoritesDbHelper favoritesDbHelper = new FavoritesDbHelper(this);
+        mFavoritesDb = favoritesDbHelper.getReadableDatabase();
 
         //Store views in variables
         Log.d(LOG_TAG, "Getting views");
@@ -90,15 +99,24 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         savedInstanceState.putParcelableArray(STATE_MOVIE_POSTER_VIEWMODELS, mMovieViewModels);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mMovieSortType == getString(R.string.sort_option_favorites)) {
+            receiveMovieData(FavoritesDBUtilities.getAllMovies(mFavoritesDb));
+        }
+    }
+
     private void loadMovieData() {
         showMovieDataView();
 
-        if(mMovieSortType == getString(R.string.sort_option_popular)) {
+        if (mMovieSortType == getString(R.string.sort_option_popular)) {
             new FetchMoviesTask(this).execute(MovieDBUtilities.MOVIE_DB_POPULAR_SERVICE);
-        } else if(mMovieSortType == getString(R.string.sort_option_top_rated)) {
+        } else if (mMovieSortType == getString(R.string.sort_option_top_rated)) {
             new FetchMoviesTask(this).execute(MovieDBUtilities.MOVIE_DB_TOP_RATED_SERVICE);
-        } else if(mMovieSortType == getString(R.string.sort_option_favorites)) {
-            //Do nothing
+        } else if (mMovieSortType == getString(R.string.sort_option_favorites)) {
+            receiveMovieData(FavoritesDBUtilities.getAllMovies(mFavoritesDb));
         }
     }
 
@@ -134,6 +152,24 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     public void receiveMovieData(MovieViewModel[] movieViewModels) {
+        //Handle the case where the same set of viewmodels is being loaded again
+        if(mMovieViewModels != null &&
+           movieViewModels != null)
+        {
+            if(mMovieViewModels.length == movieViewModels.length) {
+                boolean dataChanged = false;
+                for(int i = 0; i < movieViewModels.length; i++) {
+                    if(mMovieViewModels[i].MovieID != movieViewModels[i].MovieID) {
+                        dataChanged = true;
+                    }
+                }
+
+                if(dataChanged == false) {
+                    return;
+                }
+            }
+        }
+
         hideLoadingIndicator();
         showMovieDataView();
         mMovieViewModels = movieViewModels;

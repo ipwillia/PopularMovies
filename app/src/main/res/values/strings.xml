@@ -9,7 +9,7 @@
     <string-array name="sort_options_array">
         <item>@string/sort_option_popular</item>
         <item>@string/sort_option_top_rated</item>
-        <!--<item>@string/sort_option_favorites</item>-->
+        <item>@string/sort_option_favorites</item>
     </string-array>
 
 
@@ -19,4 +19,7 @@
 
     <string name="label_videos">Videos</string>
     <string name="label_reviews">Reviews</string>
+
+    <string name="button_mark_favorite">Mark Favorite</string>
+    <string name="button_unmark_favorite">Unmark Favorite</string>
 </resources>
